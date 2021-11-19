@@ -10,6 +10,8 @@ Since **version 1.6.1** the methods `nickcv\mandrill\Message::setHtmlBody` and `
 
 This has been done to offer a greater degree of flexibility to developers, see issues [#16](https://github.com/nickcv-ln/yii2-mandrill/issues/16) and [#19](https://github.com/nickcv-ln/yii2-mandrill/issues/19).
 
+Add support for the send_at and ip_pool options of mandrill. 
+
 Installation
 ------------
 

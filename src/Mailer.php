@@ -73,6 +73,14 @@ class Mailer extends BaseMailer
      */
     private $_apikey;
     /**
+     * @var string Mandrill ip_pool option
+     */
+    private $_ip_pool = null;
+    /**
+     * @var string Mandrill send_at option
+     */
+    private $_send_at = null;
+    /**
      * @var ApiClient the Mailchimp API instance
      * @since 2.0.0
      */
@@ -128,6 +136,35 @@ class Mailer extends BaseMailer
         $this->_apikey = $trimmedApikey;
     }
 
+    /**
+     * Sets the send_at option for Mandrill
+     *
+     * @param string $send_at the Mandrill API key
+     *
+     * @throws InvalidConfigException
+     */
+    public function setSendAt(string $send_at)
+    {
+        $trimmedSendAt = trim($send_at);
+        if (!strtotime($trimmedSendAt)) {
+            throw new InvalidConfigException('"' . get_class($this) . '::send_at" not a date.');
+        }
+
+        $this->_send_at = $trimmedSendAt;
+    }
+
+    /**
+     * Sets the ip_pool option for Mandrill
+     *
+     * @param string $ip_pool the Mandrill API key
+     *
+     * @throws InvalidConfigException
+     */
+    public function setIpPool(string $ip_pool)
+    {
+        $this->_ip_pool = $ip_pool;
+    }
+    
     /**
      * Gets Mandrill instance
      *
@@ -209,14 +246,18 @@ class Mailer extends BaseMailer
                     'template_name' => $message->getTemplateName(),
                     'template_content' => $message->getTemplateContent(),
                     'message' => $message->getMandrillMessageArray(),
-                    'async' => $message->isAsync()
+                    'async' => $message->isAsync(),
+                    'ip_pool' => $this->_ip_pool,
+                    'send_at' => $this->_send_at,
                 ])
             );
         } else {
             return $this->wasMessageSentSuccessful(
                 $this->_mailchimp->messages->send([
                     'message' => $message->getMandrillMessageArray(),
-                    'async' => $message->isAsync()
+                    'async' => $message->isAsync(),
+                    'ip_pool' => $this->_ip_pool,
+                    'send_at' => $this->_send_at,
                 ])
             );
         }
